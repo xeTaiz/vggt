@@ -6,7 +6,7 @@
 
 import torch
 import numpy as np
-from .distortion import apply_distortion
+from vggt.dependency.distortion import apply_distortion
 
 
 def img_from_cam_np(
@@ -117,7 +117,7 @@ def project_3D_points(points3D, extrinsics, intrinsics=None, extra_params=None, 
         tuple: (points2D, points_cam) where points2D is of shape BxNx2 or None if only_points_cam=True,
                and points_cam is of shape Bx3xN.
     """
-    with torch.cuda.amp.autocast(dtype=torch.double):
+    with torch.cuda.amp.autocast(enabled=False, dtype=torch.float):
         N = points3D.shape[0]  # Number of points
         B = extrinsics.shape[0]  # Batch size, i.e., number of cameras
         points3D_homogeneous = torch.cat([points3D, torch.ones_like(points3D[..., 0:1])], dim=1)  # Nx4
